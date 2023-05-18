@@ -1,10 +1,12 @@
 package org.LyQing.takeout.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.LyQing.takeout.common.R;
 import org.LyQing.takeout.entity.Employee;
 import org.LyQing.takeout.service.EmployeeService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 /**
+ * 员工控制器
+ *
  * @author yjxx_2022
+ * @date 2023/05/18
  */
 @Slf4j
 @RestController
@@ -24,11 +29,13 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     /**
+     * 登录
      * 员工登录
-     * @param request
-     * @param employee
-     * @return R
-     * */
+     *
+     * @param request  请求
+     * @param employee 员工
+     * @return {@link R}<{@link Employee}>
+     */
     @PostMapping("/login")
     public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee) {
 
@@ -62,7 +69,10 @@ public class EmployeeController {
 
     /**
      * 员工退出
-     * */
+     *
+     * @param request 请求
+     * @return {@link R}<{@link String}>
+     */
     @PostMapping("/logout")
     public  R<String> logout(HttpServletRequest  request) {
         //清理session
@@ -73,9 +83,10 @@ public class EmployeeController {
     /**
      * 新增员工
      *
-     * @param employee
-     * @return
-     * */
+     * @param request  请求
+     * @param employee 员工
+     * @return {@link R}<{@link String}>
+     */
     @PostMapping
     public R<String> save(HttpServletRequest request, @RequestBody Employee employee) {
         log.info("新增员工， 员工信息:{}", employee);
@@ -91,6 +102,34 @@ public class EmployeeController {
         employeeService.save(employee);
 
         return R.success("新增员工成功");
+    }
+
+    /**
+     * 员工分页
+     *
+     * @param page     页面
+     * @param pageSize 页面大小
+     * @param name     名字
+     * @return {@link R}<{@link Page}>
+     */
+    @GetMapping("/page")
+    public R<Page> page(int page, int pageSize, String name) {
+        log.info("page = {}, pageSize = {}, name = {}", page, pageSize, name);
+
+        //分页构造器
+        Page pageInfo = new Page(page, pageSize);
+
+        //构造条件构造器
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        //添加过滤条件
+        queryWrapper.like(StringUtils.isNotEmpty(name), Employee::getName, name);
+        //添加排序条件
+        queryWrapper.orderByAsc(Employee::getUpdateTime);
+
+        //执行查询
+        employeeService.page(pageInfo, queryWrapper);
+
+        return R.success(pageInfo);
     }
 
 }
