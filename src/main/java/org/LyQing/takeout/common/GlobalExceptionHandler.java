@@ -39,4 +39,17 @@ public class GlobalExceptionHandler {
         return R.error("未知错误");
     }
 
+    /**
+     * 异常处理方法
+     * @param ex SQLExciton
+     * @return R
+     */
+    @ExceptionHandler(CustomException.class)
+    public R<String> exceptionHandler(CustomException ex) {
+        String exMessage = ex.getMessage();
+        log.error(exMessage);
+
+        return R.error(ex.getMessage());
+    }
+
 }

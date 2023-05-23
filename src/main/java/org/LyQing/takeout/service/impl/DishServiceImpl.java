@@ -1,9 +1,11 @@
 package org.LyQing.takeout.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.LyQing.takeout.entity.Dish;
 import org.LyQing.takeout.mapper.DishMapper;
 import org.LyQing.takeout.service.DishService;
+import org.springframework.stereotype.Service;
 
 /**
  * 菜品服务
@@ -11,5 +13,7 @@ import org.LyQing.takeout.service.DishService;
  * @author yjxx_2022
  * @date 2023/05/21
  */
+@Service
+@Slf4j
 public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements DishService {
 }
