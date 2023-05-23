@@ -69,10 +69,10 @@ public class Dish {
     private LocalDateTime updateTime;
 
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createUser;
+    private Long createUser;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateUser;
+    private Long updateUser;
 
     /**
      * 是否删除
