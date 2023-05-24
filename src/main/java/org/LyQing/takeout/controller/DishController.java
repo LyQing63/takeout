@@ -96,4 +96,27 @@ public class DishController {
         return R.success(pageInfo);
     }
 
+    /**
+     * 根据id查询菜品信息和对应的口味信息
+     *
+     * @param id id
+     * @return {@link R}<{@link DishDto}>
+     */
+    @GetMapping("/{id}")
+    public R<DishDto> get(@PathVariable Long id) {
+
+        DishDto dishDto = dishService.getByIdWithFlavor(id);
+
+        return R.success(dishDto);
+    }
+
+    @PutMapping
+    public R<String> update(@RequestBody DishDto dishDto) {
+
+        dishService.updateWithFlavor(dishDto);
+
+        return R.success("新增菜品成功");
+
+    }
+
 }
