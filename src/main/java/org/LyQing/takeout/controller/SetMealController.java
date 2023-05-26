@@ -6,11 +6,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.LyQing.takeout.common.R;
 import org.LyQing.takeout.dto.DishDto;
 import org.LyQing.takeout.dto.SetMealDto;
+import org.LyQing.takeout.entity.Category;
 import org.LyQing.takeout.entity.Setmeal;
+import org.LyQing.takeout.service.CategoryService;
 import org.LyQing.takeout.service.SetMealDishService;
 import org.LyQing.takeout.service.SetmealService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 套餐控制器
@@ -28,6 +34,9 @@ public class SetMealController {
 
     @Autowired
     private SetMealDishService setMealDishService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @PostMapping
     private R<String> save(@RequestBody SetMealDto setMealDto) {
@@ -49,6 +58,8 @@ public class SetMealController {
     public R<Page> page(int page, int pageSize, String name) {
         //分页构造器
         Page<Setmeal> pageInfo = new Page<>(page, pageSize);
+
+        Page<SetMealDto> pageDto = new Page<>(page, pageSize);
         //条件构造器
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
         //添加条件
@@ -58,7 +69,26 @@ public class SetMealController {
 
         setMealService.page(pageInfo, queryWrapper);
 
-        return R.success(pageInfo);
+        //对象拷贝
+        BeanUtils.copyProperties(pageInfo, pageDto, "records");
+        //records属性拷贝
+        List<SetMealDto> list = pageInfo.getRecords().stream().map((item) -> {
+            SetMealDto setMealDto = new SetMealDto();
+            BeanUtils.copyProperties(item, setMealDto);
+            //分类id
+            Long categoryId = item.getCategoryId();
+            //根据分类id查询分类对象
+            Category category = categoryService.getById(categoryId);
+            if (category != null) {
+                String categoryName = category.getName();
+                setMealDto.setCategoryName(categoryName);
+            }
+            return setMealDto;
+        }).collect(Collectors.toList());
+
+        pageDto.setRecords(list);
+
+        return R.success(pageDto);
     }
 
 }
