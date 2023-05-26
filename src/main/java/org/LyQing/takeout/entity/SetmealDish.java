@@ -3,68 +3,43 @@ package org.LyQing.takeout.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 套餐
+ * 套餐菜
  *
  * @author yjxx_2022
- * @date 2023/05/21
+ * @date 2023/05/26
  */
 @Data
-@Slf4j
-public class Setmeal implements Serializable {
+public class SetmealDish {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
 
+    private Long setmealId;
+
+    private Long dishId;
 
     /**
-     * 分类id
-     */
-    private Long categoryId;
-
-
-    /**
-     * 套餐名称
+     * 名字(冗余字段)
      */
     private String name;
 
-
     /**
-     * 套餐价格
+     * 菜品原价
      */
     private BigDecimal price;
 
-
     /**
-     * 状态 0:停用 1:启用
+     * 份数
      */
-    private Integer status;
+    private Integer copies;
 
-
-    /**
-     * 编码
-     */
-    private String code;
-
-
-    /**
-     * 描述信息
-     */
-    private String description;
-
-
-    /**
-     * 图像
-     */
-    private String image;
-
+    private Integer sort;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
@@ -81,9 +56,6 @@ public class Setmeal implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
-
-    /**
-     * 是否删除
-     */
     private Integer isDeleted;
+
 }
