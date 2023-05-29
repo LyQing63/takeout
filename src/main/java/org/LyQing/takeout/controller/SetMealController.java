@@ -91,4 +91,19 @@ public class SetMealController {
         return R.success(pageDto);
     }
 
+    /**
+     * 删除
+     *
+     * @param ids id
+     * @return {@link R}<{@link String}>
+     */
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids) {
+
+        log.info("ids:{}", ids);
+        setMealService.removeWithDish(ids);
+
+        return R.success("删除成功");
+    }
+
 }
